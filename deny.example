@@ -1,0 +1,28 @@
+# 9front-mcp -deny deny.example
+# Commands and paths the server refuses: a guard against an agent's mistakes,
+# not a sandbox (rc can spell a command so that no rule sees it). The disks
+# are kept from the tools by the kernel anyway, unless the server runs with
+# -disks.
+# One Go regular expression a line; path: rules are for write and edit.
+# A rule that starts with a # must escape it: \#S.
+
+# partitions, file systems, boot sectors: the program at a command's start
+# (a line's, after ; & | { ( or `{), with or without its directory
+(^|[;&|{(`]\s*)(\S*/)?(prep|fdisk|edisk|mbr|format|mkext|mkfs|mkpaqfs)(\s|;|$)
+# file servers' ream and config options (hjfs -r, cwfs -c/-f, gefs -r)
+\bhjfs\b.*\s-[a-zA-Z]*r
+\bcwfs(64x?)?\b.*\s-[a-zA-Z]*[cf]
+\bgefs\b.*\s-[a-zA-Z]*r
+# raw disks: writing to them, binding the driver
+[>|]\s*\S*/dev/sd
+\bdd\b.*\s-of\s+\S*(/dev/sd|\#S)
+\#S
+# shutting the machine down
+\b(fshalt|reboot)\b
+# rm -r of / or of everything in it
+\brm\s+(-[a-zA-Z]*\s+)*(/|/\*)(\s|;|$)
+
+# the disk devices and the user database
+path:^/dev/sd
+path:^\#S
+path:^/adm/(users|keys)$

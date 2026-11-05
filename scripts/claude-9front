@@ -1,0 +1,38 @@
+#!/bin/bash
+# Claude Code working on a 9front system through its 9front-mcp: the built-in
+# tools off (--tools ""), only this server's tools (--strict-mcp-config), and
+# those allowed without asking.
+# The token comes from $MCPTOKEN or -tokenfile; claude's own arguments follow --.
+# CLAUDE_TOOLS names built-in tools to keep (e.g. WebSearch,WebFetch: they do
+# not touch this machine's files).
+# usage: claude-9front -url http://host:8090/mcp [-tokenfile f] [-name 9front] [-ask] [-- claude-args...]
+set -e
+url= tokenfile= name=9front ask=
+while [ $# -gt 0 ]; do
+	case $1 in
+	-url) url=$2; shift 2 ;;
+	-tokenfile) tokenfile=$2; shift 2 ;;
+	-name) name=$2; shift 2 ;;
+	-ask) ask=1; shift ;;	# ask before each tool call
+	--) shift; break ;;
+	*) echo "usage: claude-9front -url URL [-tokenfile f] [-name n] [-ask] [-- claude-args...]" >&2; exit 2 ;;
+	esac
+done
+[ -n "$url" ] || { echo "claude-9front: -url missing" >&2; exit 2; }
+token=${MCPTOKEN:-}
+[ -z "$tokenfile" ] || token=$(tr -d ' \n' < "$tokenfile")
+[ -n "$token" ] || { echo "claude-9front: no token (\$MCPTOKEN or -tokenfile)" >&2; exit 2; }
+
+umask 077
+cfg=$(mktemp "${TMPDIR:-/tmp}/claude-9front.XXXXXX.json")
+trap 'rm -f "$cfg"' EXIT
+python3 -c 'import json,sys; print(json.dumps({"mcpServers": {sys.argv[1]: {"type": "http", "url": sys.argv[2],
+	"headers": {"Authorization": "Bearer " + sys.argv[3]}}}}))' "$name" "$url" "$token" > "$cfg"
+
+allow=()
+[ -n "$ask" ] || allow=(--allowedTools "mcp__$name")
+# claude's options that take lists (--mcp-config, --tools, --allowedTools)
+# swallow the words after them, a prompt too: they come last
+claude "$@" \
+	--append-system-prompt "You are working on a 9front (Plan 9) system through the mcp__${name}__* tools; the machine Claude Code runs on, its working directory and its files are not part of the task. Paths, commands and the working directory are the 9front system's." \
+	--strict-mcp-config --mcp-config "$cfg" --tools "${CLAUDE_TOOLS:-}" "${allow[@]}"
