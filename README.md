@@ -78,14 +78,18 @@ nothing it must not touch.
 
 ## Notes on Go for Plan 9
 
-Found while writing this (`../9front-go`, the same in upstream Go):
+Found while writing this. The first two are upstream Go's code, fixed in
+`../9front-go` (patch 0006); the server copes with an unfixed Go as well:
 
-- `syscall/exec_plan9.go` writes every environment value to the child's `/env`
+- `syscall/exec_plan9.go` wrote every environment value to the child's `/env`
   with a NUL at the end. For a list that is the terminator rc expects, but an
-  rc function (`fn#name`) then fails to parse in the child (`/env/fn#sigexit:1:
-  syntax error`). The server leaves the functions out.
-- `ProcessState`'s `Waitmsg.Msg` keeps the wait message's quoting
-  (`'rm 269: ... ''/x'''`); the server unquotes it.
+  rc function (`fn#name`) then failed to parse in the child (`/env/fn#sigexit:1:
+  syntax error`). The server leaves the functions out anyway: they are its
+  shell's, not the commands'.
+- `Waitmsg.Msg` kept the wait message's quoting (`'rm 269: ... ''/x'''`);
+  the server unquotes it.
+- Not fixed: after `syscall.Exec` the Go runtime's other procs stay (the
+  server does not use it).
 - The Go runtime is several procs sharing memory, so one proc's
   `rfork(RFNAMEG)` would split the runtime's name space. Restrictions are
   therefore applied in each command's own name group (an rc prefix), not in the
