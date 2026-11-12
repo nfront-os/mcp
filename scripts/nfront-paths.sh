@@ -3,17 +3,17 @@
 # Sourced after TOP (this repository) is set; exports each variable of the
 # distribution's paths.env (TREE, TREE_GCC, TREE_NIX, TREE_RISCV, GCC_DIR,
 # RUST_DIR, GO_DIR, ...) that the environment does not set already, as an
-# absolute path.  paths.env: $NFRONT_PATHS, else TOP/../dist/paths.env (the
-# umbrella's layout), else TOP/../9front-distribution/paths.env; without it
+# absolute path.  paths.env: $NFRONT_PATHS, else TOP/../dist/paths.env or TOP/../../dist/paths.env (the
+# umbrella's layout; ../../dist for the toolchains in toolchain/), else TOP/../9front-distribution/paths.env; without it
 # the old layout's ../9front-* names.  The same file in each repository.
 __nfront_paths(){
 	local f top line k v
-	for f in "$NFRONT_PATHS" "$TOP/../dist/paths.env" "$TOP/../9front-distribution/paths.env"; do
+	for f in "$NFRONT_PATHS" "$TOP/../dist/paths.env" "$TOP/../../dist/paths.env" "$TOP/../9front-distribution/paths.env"; do
 		[ -n "$f" ] && [ -f "$f" ] && break
 		f=
 	done
 	if [ -n "$f" ]; then
-		top=$(cd "$(dirname "$f")/.." && pwd)
+		top=$(cd -P "$(dirname "$f")/.." && pwd -P)	# physical: through a symlink of the old layout too
 		while IFS= read -r line; do
 			case "$line" in ''|'#'*) continue;; esac
 			k=${line%%=*}
