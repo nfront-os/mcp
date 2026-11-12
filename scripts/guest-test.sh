@@ -7,8 +7,9 @@
 # usage: [objtype=amd64|386] [PORT=18091] [CLAUDE=1] scripts/guest-test.sh
 set -e
 TOP=$(cd "$(dirname "$0")/.." && pwd)
-PLAN9=$(cd "${PLAN9:-$TOP/../9front-gccwt}" && pwd)
-GO=${GO:-$TOP/../9front-go/go/bin/go}
+. "$TOP/scripts/nfront-paths.sh"	# TREE, TREE_GCC, GCC_DIR, ... (the distribution's paths.env)
+PLAN9=$(cd "${PLAN9:-$TREE_GCC}" && pwd)
+GO=${GO:-$GO_DIR/go/bin/go}
 A=${objtype:-amd64}
 PORT=${PORT:-18091}
 TOKEN=guesttest$$
