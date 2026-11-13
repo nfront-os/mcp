@@ -28,6 +28,9 @@ that has plan9/amd64 builds it as well.
 
 ## On 9front
 
+nfront's install CD carries it with `dist/bin/mkcd -mcp` (any profile): the binary as
+`/$objtype/bin/9front-mcp`, `deny.example` as `/sys/lib/mcp/deny`. Then:
+
     9front-mcp -http 'tcp!*!8090' -tokenfile /usr/glenda/lib/mcptoken -deny /sys/lib/mcp/deny -dir /usr/glenda/src
 
 Without `-token`, `-tokenfile` or `$MCPTOKEN`, it makes up a token and prints it.
