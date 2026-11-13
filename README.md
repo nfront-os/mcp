@@ -72,7 +72,7 @@ nothing it must not touch.
 ## Tests
 
     go test ./...              # on Linux: the protocol, the tools (rc as /bin/sh)
-    scripts/guest-test.sh      # in a 9front guest (../9front-gccwt's boot-cli.sh): every tool,
+    scripts/guest-test.sh      # in a 9front guest (the tree's boot-cli.sh, TREE): every tool,
                                # the disk guard and the deny list over HTTP from the host
     CLAUDE=1 scripts/guest-test.sh   # and Claude Code working in the guest (haiku)
 

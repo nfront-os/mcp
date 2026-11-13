@@ -8,7 +8,7 @@
 set -e
 TOP=$(cd "$(dirname "$0")/.." && pwd)
 . "$TOP/scripts/nfront-paths.sh"	# TREE, TREE_GCC, GCC_DIR, ... (the distribution's paths.env)
-PLAN9=$(cd "${PLAN9:-$TREE_GCC}" && pwd)
+PLAN9=$(cd "${PLAN9:-$TREE}" && pwd)
 GO=${GO:-$GO_DIR/go/bin/go}
 A=${objtype:-amd64}
 PORT=${PORT:-18091}
