@@ -13,7 +13,7 @@ GO=${GO:-$GO_DIR/go/bin/go}
 A=${objtype:-amd64}
 PORT=${PORT:-18091}
 TOKEN=guesttest$$
-CLI_DIR=${CLI_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/9front-cli}
+CLI_DIR=${CLI_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/nfront/cli}
 mkdir -p "$TOP/build"
 T=$(mktemp -d -p "$TOP/build")
 mkdir -p "$T/extra/tests"
