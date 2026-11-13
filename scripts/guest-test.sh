@@ -1,6 +1,6 @@
 #!/bin/bash
-# 9front-mcp in a 9front guest (../9front-gccwt's scripts/guest/boot-cli.sh, as
-# ../9front-go's tests do), reached from the host over HTTP: a second NIC whose
+# 9front-mcp in a 9front guest (the tree's scripts/guest/boot-cli.sh, TREE, as
+# toolchain/go's tests do), reached from the host over HTTP: a second NIC whose
 # QEMU user network forwards 127.0.0.1:$PORT to the guest's port 8090.
 # Checks the protocol and each tool with curl; CLAUDE=1 then also lets Claude
 # Code work in the guest through it (scripts/claude-9front).

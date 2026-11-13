@@ -17,7 +17,7 @@ const defaultShell = "/bin/rc"
 //
 // The environment goes without rc's functions (fn#name): they are the
 // server's shell's (sigexit & co.), not the command's. (Go before
-// ../9front-go's patch 0006 also wrote them back to /env with a NUL at the
+// nfront's Go's patch 0006 (toolchain/go) also wrote them back to /env with a NUL at the
 // end, which rc cannot parse: "/env/fn#sigexit:1: syntax error".)
 func newGroup(cmd *exec.Cmd) {
 	cmd.SysProcAttr = &syscall.SysProcAttr{Rfork: syscall.RFNOTEG | syscall.RFNAMEG}
@@ -42,7 +42,7 @@ func killGroup(cmd *exec.Cmd) error {
 }
 
 // exitStatus is the process's exit string, as rc's $status shows it. Go
-// before ../9front-go's patch 0006 leaves the wait message's quoting on it
+// before nfront's Go's patch 0006 (toolchain/go) leaves the wait message's quoting on it
 // (in single quotes, a quote inside doubled); a message itself starts with
 // the program's name, never with a quote.
 func exitStatus(ee *exec.ExitError) string {

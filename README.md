@@ -13,11 +13,18 @@ than sh, mk, walk, and so on.
 Transport: MCP's Streamable HTTP (POST `/mcp`, JSON answers, `Mcp-Session-Id`,
 DELETE ends a session; no server-sent streams), or `-stdio`.
 
+Part of [nfront](https://github.com/nfront-os/nfront): it lives in `tools/mcp`
+(`MCP_DIR` of `dist/paths.env`). The tree uses it for its guests:
+`tree/scripts/guest/mcp-guest.sh` builds it, boots a QEMU guest that runs it, and
+`tree/scripts/guest/mcp.py` runs commands and reads files there over HTTP (one
+request each, instead of typing on the serial line). It is not on the install CD.
+
 ## Build
 
-    GOOS=plan9 GOARCH=amd64 ../9front-go/go/bin/go build -o 9front-mcp .    # 386, arm64 too
+    GOOS=plan9 GOARCH=amd64 ../../toolchain/go/go/bin/go build -o 9front-mcp .    # 386, arm64 too
 
-Any Go that has plan9/amd64 builds it as well; `../9front-go` also does arm64.
+That is nfront's Go (`GO_DIR`, `toolchain/go`), which also does arm64; any Go
+that has plan9/amd64 builds it as well.
 
 ## On 9front
 
@@ -79,7 +86,7 @@ nothing it must not touch.
 ## Notes on Go for Plan 9
 
 Found while writing this. The first two are upstream Go's code, fixed in
-`../9front-go` (patch 0006); the server copes with an unfixed Go as well:
+nfront's Go (`toolchain/go`, patch 0006); the server copes with an unfixed Go as well:
 
 - `syscall/exec_plan9.go` wrote every environment value to the child's `/env`
   with a NUL at the end. For a list that is the terminator rc expects, but an
